@@ -56,28 +56,31 @@ def create_dataset(training_dir_path, labels):
                 X.append(np.append(imgEncoding[0], i[1]))
     return X
 
-encoding_file_path = './encoded-images-data.csv'
-training_dir_path = './training-images'
-labels_fName = "labels.pkl"
-
-# Get the folder names in training-dir as labels
-# Encode them in numerical form for machine learning
-labels = _get_training_labels(training_dir_path)
-le = LabelEncoder().fit(labels)
-labelsNum = le.transform(labels)
-nClasses = len(le.classes_)
-dataset = create_dataset(training_dir_path, labelsNum)
-df = pd.DataFrame(dataset)
-
-# if file with same name already exists, backup the old file
-if os.path.isfile(encoding_file_path):
-    print("{} already exists. Backing up.".format(encoding_file_path))
-    os.rename(encoding_file_path, "{}.bak".format(encoding_file_path))
-
-df.to_csv(encoding_file_path)
-
-print("{} classes created.".format(nClasses))
-print('\x1b[6;30;42m' + "Saving labels pickle to'{}'".format(labels_fName) + '\x1b[0m')
-with open(labels_fName, 'wb') as f:
-    pickle.dump(le, f)
-print('\x1b[6;30;42m' + "Training Image's encodings saved in {}".format(encoding_file_path) + '\x1b[0m')
+def main():
+    encoding_file_path = './encoded-images-data.csv'
+    training_dir_path = './training-images'
+    labels_fName = "labels.pkl"
+    
+    # Get the folder names in training-dir as labels
+    # Encode them in numerical form for machine learning
+    labels = _get_training_labels(training_dir_path)
+    le = LabelEncoder().fit(labels)
+    labelsNum = le.transform(labels)
+    nClasses = len(le.classes_)
+    dataset = create_dataset(training_dir_path, labelsNum)
+    df = pd.DataFrame(dataset)
+    
+    # if file with same name already exists, backup the old file
+    if os.path.isfile(encoding_file_path):
+        print("{} already exists. Backing up.".format(encoding_file_path))
+        os.rename(encoding_file_path, "{}.bak".format(encoding_file_path))
+    
+    df.to_csv(encoding_file_path)
+    
+    print("{} classes created.".format(nClasses))
+    print('\x1b[6;30;42m' + "Saving labels pickle to'{}'".format(labels_fName) + '\x1b[0m')
+    with open(labels_fName, 'wb') as f:
+        pickle.dump(le, f)
+    print('\x1b[6;30;42m' + "Training Image's encodings saved in {}".format(encoding_file_path) + '\x1b[0m')
+    
+main()
